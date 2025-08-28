@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from urllib.parse import quote_plus
 
 driver = "ODBC Driver 18 for SQL Server"
-server = "vm_db_others.pgas.ph"
+server = "192.168.101.57"
 database = "dts"
 username = "web"
 password = "z$,41997644GYTP"
