@@ -5,13 +5,15 @@ from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
 from config.pmis_db import engine
 from routes import doc_route, reference, verify_user, refresh, calendar
+from routes.DTS import document
 from routes.route import router
 
 app = FastAPI()
 
 origins = [
     "http://localhost:5173",  # Example: Allow a frontend running on localhost:3000
-    "https://yourdomain.com",  # Example: Allow a specific production domain
+    "https://pgas.ph",  # Example: Allow a specific production domain
+    "http://localhost"
 ]
 
 # Add CORSMiddleware to the FastAPI app
@@ -41,4 +43,10 @@ app.include_router(reference.router, prefix="/refs", tags=["refs"])
 app.include_router(verify_user.router, prefix="/auth", tags=["auth"])
 app.include_router(refresh.router, prefix="/authorize", tags=["authorize"])
 app.include_router(calendar.router, prefix="/test", tags=["test"])
+
+## region DTS
+app.include_router(document.router, prefix="/document", tags=["document"])
+
+## endregion
+
 app.include_router(router)

@@ -1,7 +1,9 @@
-from datetime import datetime
+
 
 from pydantic import BaseModel
 from typing import List, Optional
+
+from models.DTS.document import StatusHistoryModel
 
 
 class DatesModel(BaseModel):
@@ -27,17 +29,6 @@ class UserActionModel(BaseModel):
     routed: int
     acted: int
     completed: int
-
-
-class StatusHistoryModel(BaseModel):
-    id: str
-    status: str
-    remarks: str
-    userid: int
-    name: str
-    statusdate: datetime
-    statustime: str
-    officeid: int
 
 class StatusHistoryViewModel(StatusHistoryModel):
     statusdatestr: str

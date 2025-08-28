@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,9 +5,9 @@ from config.pmis_db import pmis_session
 from functions.conver_to_date import convert_date_format
 from config.database import db, collection_name, cl_routed_documents
 from models.RouteToEmployeeModel import PostRouteModel, RouteModel
-from models.RoutedDocumentModel import DatesModel, InstructionModel, UserActionModel, StatusHistoryModel
+from models.DTS.RoutedDocumentModel import InstructionModel, UserActionModel, StatusHistoryModel
 from schema.schemas import list_serial, document_serial
-from schema.routed_documents import list_rd_serial, rd_serial
+from schema.routed_documents import list_rd_serial
 from sqlalchemy import text
 
 router = APIRouter()
@@ -40,7 +38,7 @@ async def get_document(id: str):
 
     return document
 
-from fastapi import HTTPException
+
 from datetime import datetime
 from bson import ObjectId
 

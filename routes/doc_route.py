@@ -9,7 +9,8 @@ from config.pmis_db import pmis_session
 from functions.conver_to_date import convert_date_format1, convert_date_format
 from models.ActionTaken import ActionTakenModel
 from models.RouteToEmployeeModel import PostRouteModel, RouteModel
-from models.RoutedDocumentModel import InstructionModel, UserActionModel, StatusHistoryModel
+from models.DTS.RoutedDocumentModel import InstructionModel, UserActionModel
+from models.DTS.document import StatusHistoryModel
 
 from bson import  ObjectId
 
@@ -25,9 +26,11 @@ async def post_routetoemployee(post_request: PostRouteModel):
     documents = []
     #employee_ids = [int(emp.strip()) for emp in post_request.employees.split(',')]
 
+
+
     for employee in post_request.employees:
         # Check if the document is already routed to the employee
-        print(employee)
+
         existing_document = db["RoutedDocuments"].find_one({
             "guidocid": post_request.guidocid,
             "docid": post_request.docid,
@@ -38,7 +41,7 @@ async def post_routetoemployee(post_request: PostRouteModel):
         # If the document exists, update it with the new instruction
         if existing_document:
             # Update the document with a new instruction
-            print(existing_document["_id"])
+
             updated_document = db["RoutedDocuments"].update_one(
                 {"_id": existing_document["_id"]},
                 {
@@ -122,6 +125,7 @@ async def post_routetoemployee(post_request: PostRouteModel):
                 }
             )
 
+    print(post_request.useraction.completed)
     update_action = db["RoutedDocuments"].update_one(
         {"guidocid": post_request.guidocid,
          "toeid": post_request.fromeid,},
@@ -130,7 +134,7 @@ async def post_routetoemployee(post_request: PostRouteModel):
                 "useraction" : {
                     "routed": 1,
                     "acted": 1,
-                    "completed": 0,
+                    "completed": post_request.useraction.completed,
                 }
             }
         }
@@ -222,7 +226,8 @@ async def get_document(userid: int, status: str, session: AsyncSession = Depends
                     "_id": 1,
                     "guidocid": 1,
                     "toeid": 1,
-                    "daterouted": "$dates.daterouted"
+                    "daterouted": "$dates.daterouted",
+                    "useraction": 1
                 }
             }
         ]
@@ -252,9 +257,10 @@ async def get_document(userid: int, status: str, session: AsyncSession = Depends
                     "daterouted": convert_date_format(doc["daterouted"]),
                     "eid": eid,
                     "name": sql_data.get("EmpName"),
+                    "useraction": doc["useraction"],
                 })
 
-
+       
         document["routedemployees"] = combined
 
 
@@ -288,7 +294,9 @@ async def get_employees_routed(userid: int, docid: str, session: AsyncSession = 
                 "_id": 1,
                 "guidocid": 1,
                 "toeid": 1,
-                "daterouted" : "$dates.daterouted"
+                "daterouted" : "$dates.daterouted",
+                "acted" : "$useraction.acted",
+                "completed" : "$useraction.completed",
             }
         }
     ]
@@ -309,7 +317,7 @@ async def get_employees_routed(userid: int, docid: str, session: AsyncSession = 
         for row in rows
     }
 
-    print(employees_routed)
+
     combined = []
     for doc in employees_routed:
         eid = doc["toeid"]

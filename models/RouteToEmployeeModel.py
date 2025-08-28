@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
-from models.RoutedDocumentModel import DatesModel, InstructionModel, UserActionModel
+from models.DTS.RoutedDocumentModel import DatesModel, InstructionModel, UserActionModel
 
 class keyValueModel(BaseModel):
     key: str
@@ -20,6 +20,7 @@ class PostRouteModel(baseRouteModel):
     actions: str
     instruction: str
     name: str
+    useraction: UserActionModel
 
 class RouteModel(baseRouteModel):
     dateinserted: datetime

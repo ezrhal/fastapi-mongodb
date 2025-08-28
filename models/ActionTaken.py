@@ -1,8 +1,5 @@
-from datetime import datetime
-from typing import Optional
-
 from pydantic import BaseModel
-from models.RoutedDocumentModel import DatesModel, InstructionModel, UserActionModel
+from models.DTS.RoutedDocumentModel import UserActionModel
 
 class ActionTakenModel(BaseModel):
     guidocid:str

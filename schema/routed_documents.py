@@ -1,8 +1,3 @@
-from xml.dom.minidom import Document
-
-from models.RoutedDocumentModel import RoutedDocumentViewModel
-
-
 def ind_rd_serial(document) -> dict:
     return {
         "id" : str(document["_id"]),
