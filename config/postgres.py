@@ -10,7 +10,7 @@ DATABASE_URL = URL.create(
     "postgresql+psycopg2",  # or "postgresql+psycopg"
     username="postgres",
     password="pgas@*153",  # raw; SQLAlchemy will quote it
-    host="vm_db_postgresql.pgas.ph",
+    host="192.168.101.67",
     port=5432,
     database="neweps",
 )
