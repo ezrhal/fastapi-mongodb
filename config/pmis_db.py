@@ -3,10 +3,10 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from urllib.parse import quote_plus
 
 driver = "ODBC Driver 18 for SQL Server"
-server = "127.0.0.1,1433"
+server = "vm_db_pmis.pgas.ph"
 database = "pmis"
-username = "sa"
-password = "Pimo@*123"
+username = "web"
+password = "z$,41997644GYTP"
 
 # put the DRIVER=... in the query string; it must be URL-encoded
 query = {
