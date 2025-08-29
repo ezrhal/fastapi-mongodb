@@ -30,7 +30,7 @@ async def update_document(document: PostDocumentModel):
                 "filelocation.filebox": document.filelocation.filebox,
                 "filelocation.folder": document.filelocation.folder,
             },
-            "$pust" : {
+            "$push" : {
                 "statushistory": document.statushistory,
             }
         }
