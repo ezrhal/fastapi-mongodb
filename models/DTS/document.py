@@ -21,6 +21,9 @@ class AttachmentModel(BaseModel):
     id: str
     filename: str
 
+class PostAttachmentModel(AttachmentModel):
+    docid: int
+
 class RecipientModel(BaseModel):
     id: str
     officeid: int
