@@ -15,26 +15,36 @@ async def save_document(post_request: PostDocumentModel):
 
 @router.post("/updatedocument")
 async def update_document(document: PostDocumentModel):
-    doc = jsonable_encoder(document)
-    document = db["Documents"].update_one(
-        { "docid" : document.docid},
-        {
-            "$set": {
-                "sourceoffice" : document.sourceoffice,
-                "sender" : document.sender,
-                "documenttype" : document.documenttype,
-                "subject" : document.subject,
-                "description" : document.description,
-                "filelocation.cabinet" : document.filelocation.cabinet,
-                "filelocation.drawer": document.filelocation.drawer,
-                "filelocation.filebox": document.filelocation.filebox,
-                "filelocation.folder": document.filelocation.folder,
-            },
-            "$push" : {
-                "statushistory": document.statushistory,
-            }
+    data = jsonable_encoder(document)  # dict-safe (handles datetimes, enums, etc.)
+
+    # If your document is keyed by Mongo _id (ObjectId), use this instead:
+    # selector = {"_id": ObjectId(data["docid"])}
+    selector = {"docid": data["docid"]}
+
+    update_doc = {
+        "$set": {
+            "sourceoffice": data["sourceoffice"],
+            "sender": data["sender"],
+            "documenttype": data["documenttype"],
+            "subject": data["subject"],
+            "description": data["description"],
+            # update nested fields
+            "filelocation.cabinet": data["filelocation"]["cabinet"],
+            "filelocation.drawer": data["filelocation"]["drawer"],
+            "filelocation.filebox": data["filelocation"]["filebox"],
+            "filelocation.folder": data["filelocation"]["folder"],
         }
-    )
+    }
+
+    # Append to statushistory if provided
+    sh = data.get("statushistory")
+    if sh:
+        if isinstance(sh, list):
+            update_doc["$push"] = {"statushistory": {"$each": sh}}
+        else:
+            update_doc["$push"] = {"statushistory": sh}
+
+    result = db["Documents"].update_one(selector, update_doc)
 
 @router.post("/saveattachment")
 async def save_attachment(attachment: PostAttachmentModel):
