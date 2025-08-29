@@ -14,7 +14,7 @@ async def save_document(post_request: DocumentModel):
     document = db["Documents"].insert_one(doc)
 
 
-@router.get("/saveattachment")
+@router.post("/saveattachment")
 async def save_attachment(attachment: PostAttachmentModel):
     doc = jsonable_encoder(attachment)
 
