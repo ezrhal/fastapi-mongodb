@@ -49,3 +49,6 @@ class DocumentModel(BaseModel):
     attachment: list[AttachmentModel]
     recipient: list[RecipientModel]
     statushistory: list[StatusHistoryModel]
+
+class PostDocumentModel(DocumentModel):
+    docid: int
