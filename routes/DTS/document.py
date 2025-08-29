@@ -17,7 +17,7 @@ async def save_document(post_request: PostDocumentModel):
 async def update_document(document: PostDocumentModel):
     doc = jsonable_encoder(document)
     document = db["Documents"].update_one(
-        { "docidd" : document.docid},
+        { "docid" : document.docid},
         {
             "$set": {
                 "sourceoffice" : document.sourceoffice,
