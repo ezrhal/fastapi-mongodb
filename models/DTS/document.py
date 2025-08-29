@@ -15,7 +15,7 @@ class FileLocationModel(BaseModel):
     cabinet: str
     drawer: str
     filebox: str
-    drawer: str
+    folder: str
 
 class AttachmentModel(BaseModel):
     id: str

@@ -13,6 +13,28 @@ async def save_document(post_request: PostDocumentModel):
     doc = jsonable_encoder(post_request)
     document = db["Documents"].insert_one(doc)
 
+@router.post("/updatedocument")
+async def update_document(document: PostDocumentModel):
+    doc = jsonable_encoder(document)
+    document = db["Documents"].update_one(
+        { "docidd" : document.docid},
+        {
+            "$set": {
+                "sourceoffice" : document.sourceoffice,
+                "sender" : document.sender,
+                "documenttype" : document.documenttype,
+                "subject" : document.subject,
+                "description" : document.description,
+                "filelocation.cabinet" : document.filelocation.cabinet,
+                "filelocation.drawer": document.filelocation.drawer,
+                "filelocation.filebox": document.filelocation.filebox,
+                "filelocation.folder": document.filelocation.folder,
+            },
+            "$pust" : {
+                "statushistory": document.statushistory,
+            }
+        }
+    )
 
 @router.post("/saveattachment")
 async def save_attachment(attachment: PostAttachmentModel):
@@ -31,3 +53,5 @@ async def save_attachment(attachment: PostAttachmentModel):
             }
         }
     )
+
+
