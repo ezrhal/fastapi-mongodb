@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 
 class StatusHistoryModel(BaseModel):
@@ -46,8 +46,8 @@ class DocumentModel(BaseModel):
     datereceived: datetime
     dateprepared: datetime
     filelocation : FileLocationModel
-    attachment: list[AttachmentModel]
-    recipient: list[RecipientModel]
+    attachment: list[AttachmentModel]  = Field(default_factory=list)
+    recipient: list[RecipientModel]  = Field(default_factory=list)
     statushistory: list[StatusHistoryModel]
 
 class PostDocumentModel(DocumentModel):
