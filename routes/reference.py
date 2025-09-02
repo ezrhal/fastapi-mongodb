@@ -1,7 +1,7 @@
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from config.pmis_db import pmis_session
+from config.db.pmis_db import pmis_session
 from sqlalchemy import text
 
 router = APIRouter()

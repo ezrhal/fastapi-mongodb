@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from models.DTS.RoutedDocumentModel import UserActionModel
+from models.DTS.RoutedDocument import UserActionModel
 
 class ActionTakenModel(BaseModel):
     guidocid:str

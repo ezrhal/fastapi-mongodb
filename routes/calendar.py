@@ -5,8 +5,8 @@ from sqlalchemy import text, bindparam
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
-from config.spms_db import spms_session
-from config.postgres import get_db
+from config.db.spms_db import spms_session
+from config.db.postgres import get_db
 
 router = APIRouter()
 

@@ -3,7 +3,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
-from models.DTS.document import StatusHistoryModel
+from models.DTS.Document import StatusHistoryModel
 
 
 class DatesModel(BaseModel):

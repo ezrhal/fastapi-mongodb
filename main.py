@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
-from config.pmis_db import engine
+from config.db.pmis_db import engine
 from routes import doc_route, reference, verify_user, refresh, calendar
 from routes.DTS import document
 from routes.route import router

@@ -4,13 +4,13 @@ from fastapi import APIRouter, HTTPException, Depends, Body
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config.database import db
-from config.pmis_db import pmis_session
+from config.db.mongodb import db
+from config.db.pmis_db import pmis_session
 from functions.conver_to_date import convert_date_format1, convert_date_format
-from models.ActionTaken import ActionTakenModel
-from models.RouteToEmployeeModel import PostRouteModel, RouteModel
-from models.DTS.RoutedDocumentModel import InstructionModel, UserActionModel
-from models.DTS.document import StatusHistoryModel
+from models.DTS.ActionTaken import ActionTakenModel
+from models.DTS.RouteToEmployee import PostRouteModel, RouteModel
+from models.DTS.RoutedDocument import InstructionModel, UserActionModel
+from models.DTS.Document import StatusHistoryModel
 
 from bson import  ObjectId
 

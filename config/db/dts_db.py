@@ -1,12 +1,14 @@
 # db.py
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from urllib.parse import quote_plus
+from config.config import settings
 
 driver = "ODBC Driver 18 for SQL Server"
-server = "192.168.101.57"
+server = settings.OTHERS_DB_ADDRESS.get_secret_value()
 database = "dts"
-username = "web"
-password = "z$,41997644GYTP"
+username = settings.SQL_USER.get_secret_value()
+password = settings.SQL_PASS.get_secret_value()
+
 
 # put the DRIVER=... in the query string; it must be URL-encoded
 query = {

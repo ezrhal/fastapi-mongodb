@@ -1,4 +1,3 @@
-import token
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Response, Request
@@ -6,8 +5,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError, ExpiredSignatureError
 from sqlalchemy.ext.asyncio import AsyncSession
 from config.config import settings
-from config.pmis_db import pmis_session
-from config.dts_db import dts_session
+from config.db.pmis_db import pmis_session
+from config.db.dts_db import dts_session
 
 from sqlalchemy import text
 import time

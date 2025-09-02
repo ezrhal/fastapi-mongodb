@@ -1,10 +1,8 @@
 from fastapi import APIRouter
 
-from config.database import db
-from models.DTS.document import DocumentModel, AttachmentModel, PostAttachmentModel, PostDocumentModel
+from config.db.mongodb import db
+from models.DTS.Document import AttachmentModel, PostAttachmentModel, PostDocumentModel
 from fastapi.encoders import jsonable_encoder
-from models.RouteToEmployeeModel import PostRouteModel
-from models.DTS.RoutedDocumentModel import StatusHistoryModel
 
 router = APIRouter()
 

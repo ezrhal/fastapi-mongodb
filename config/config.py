@@ -6,10 +6,11 @@ class Settings(BaseSettings):
     SECRET_KEY: SecretStr
     # access_token_expire_minutes: int = 30
     #
-    # # DB 1
-    # db1_server: str
-    # db1_database: str
-    # db1_user: str
+    # SQL SERVER
+    SQL_PASS: SecretStr
+    SQL_USER: SecretStr
+    PMIS_DB_ADDRESS: SecretStr
+    OTHERS_DB_ADDRESS: SecretStr
     # db1_password: SecretStr
     #
     # # DB 2 (optional)
