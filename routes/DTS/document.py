@@ -1,7 +1,10 @@
+from datetime import  datetime
+
 from fastapi import APIRouter
 
 from config.db.mongodb import db
-from models.DTS.Document import AttachmentModel, PostAttachmentModel, PostDocumentModel
+from models.DTS.Document import AttachmentModel, PostAttachmentModel, PostDocumentModel, PostRecipientModel, \
+    RecipientModel
 from fastapi.encoders import jsonable_encoder
 
 router = APIRouter()
@@ -62,4 +65,26 @@ async def save_attachment(attachment: PostAttachmentModel):
         }
     )
 
+@router.post("/saverecipient")
+async def save_recipient(recipient: PostRecipientModel):
+    doc = jsonable_encoder(recipient)
 
+    newRecipient = RecipientModel(
+        id=recipient.id,
+        officeid=recipient.officeid,
+        officename=recipient.officename,
+        officeabbr="",
+        datereceived=recipient.datereceived,
+        timereceived=datetime.now().strftime("%H:%M"),
+        userid=recipient.userid,
+        name=recipient.name,
+    )
+
+    result = db["Documents"].update_one(
+        {"docid": recipient.docid},
+        {
+            "$push": {
+                "recipient": newRecipient
+            }
+        }
+    )

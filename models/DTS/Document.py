@@ -34,6 +34,9 @@ class RecipientModel(BaseModel):
     userid: int
     name: str
 
+class PostRecipientModel (RecipientModel):
+    docid: int
+
 class DocumentModel(BaseModel):
     sourceoffice: str
     sender: str
