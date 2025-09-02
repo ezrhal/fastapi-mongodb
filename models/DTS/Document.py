@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
 from datetime import datetime
 
@@ -29,7 +31,7 @@ class RecipientModel(BaseModel):
     officeid: int
     officename: str
     officeabbr: str
-    datereceived: datetime
+    datereceived: Optional[datetime] = None
     timereceived: str
     userid: int
     name: str
