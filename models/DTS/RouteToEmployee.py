@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
-from models.DTS.RoutedDocumentModel import DatesModel, InstructionModel, UserActionModel
+from models.DTS.RoutedDocument import DatesModel, InstructionModel, UserActionModel
 
 class keyValueModel(BaseModel):
     key: str
