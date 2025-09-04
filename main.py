@@ -46,7 +46,7 @@ app.include_router(calendar.router, prefix="/test", tags=["test"])
 
 ## region DTS
 app.include_router(document.router, prefix="/document", tags=["document"])
-app.include_router(recipient.router, prefix="/document", tags=["document"])
+app.include_router(recipient.router, prefix="/document/recipient", tags=["recipient"])
 
 ## endregion
 
