@@ -5,7 +5,7 @@ from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
 from config.db.pmis_db import engine
 from routes import doc_route, reference, verify_user, refresh, calendar
-from routes.DTS import document
+from routes.DTS import document, recipient
 from routes.route import router
 
 app = FastAPI()
@@ -46,6 +46,7 @@ app.include_router(calendar.router, prefix="/test", tags=["test"])
 
 ## region DTS
 app.include_router(document.router, prefix="/document", tags=["document"])
+app.include_router(recipient.router, prefix="/document", tags=["document"])
 
 ## endregion
 
