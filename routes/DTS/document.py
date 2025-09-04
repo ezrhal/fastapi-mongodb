@@ -67,23 +67,26 @@ async def save_attachment(attachment: PostAttachmentModel):
 
 @router.post("/saverecipient")
 async def save_recipient(recipient: PostRecipientModel):
-    doc = jsonable_encoder(recipient)
-
-    newRecipient = PostRecipientModel(
+    # Build the subdocument that goes into the array (no docid)
+    new_recipient = RecipientModel(
         id=recipient.id,
         officeid=recipient.officeid,
         officename=recipient.officename,
-        officeabbr="",
+        officeabbr=recipient.officeabbr or "",
+        datereceived=None,  # or datetime.utcnow() if you want to set it
         timereceived=datetime.now().strftime("%H:%M"),
         userid=recipient.userid,
         name=recipient.name,
     )
 
+    # Convert to plain dict for Mongo (omit None fields if you prefer)
+    recipient_doc = new_recipient.model_dump(exclude_none=True)
+    # If you want to keep nulls instead, use: new_recipient.model_dump()
+
     result = db["Documents"].update_one(
         {"docid": recipient.docid},
-        {
-            "$push": {
-                "recipient": newRecipient
-            }
-        }
+        {"$push": {"recipient": recipient_doc}},
+        upsert=False,
     )
+
+    return {"matched": result.matched_count, "modified": result.modified_count}
