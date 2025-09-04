@@ -41,7 +41,7 @@ class RecipientModel(BaseModel):
 class PostRecipientModel (RecipientModel):
     docid: int
 
-class PostRemoveOfficeModel():
+class PostRemoveOfficeModel(BaseModel):
     docid: int
     officeid: int
     alloffices: int
