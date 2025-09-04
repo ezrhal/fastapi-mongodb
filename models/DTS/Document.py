@@ -26,18 +26,27 @@ class AttachmentModel(BaseModel):
 class PostAttachmentModel(AttachmentModel):
     docid: int
 
+
+## region RECIPIENT
 class RecipientModel(BaseModel):
     id: str
     officeid: int
     officename: str
     officeabbr: str
-    datereceived: datetime
+    datereceived: Optional[datetime] = None
     timereceived: str
     userid: int
     name: str
 
 class PostRecipientModel (RecipientModel):
     docid: int
+
+class PostRemoveOfficeModel():
+    docid: int
+    officeid: int
+    alloffices: int
+
+## endregion
 
 class DocumentModel(BaseModel):
     sourceoffice: str
