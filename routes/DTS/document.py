@@ -74,7 +74,6 @@ async def save_recipient(recipient: PostRecipientModel):
         officeid=recipient.officeid,
         officename=recipient.officename,
         officeabbr="",
-        datereceived=None,
         timereceived=datetime.now().strftime("%H:%M"),
         userid=recipient.userid,
         name=recipient.name,
