@@ -69,7 +69,7 @@ async def save_attachment(attachment: PostAttachmentModel):
 async def save_recipient(recipient: PostRecipientModel):
     doc = jsonable_encoder(recipient)
 
-    newRecipient = RecipientModel(
+    newRecipient = PostRecipientModel(
         id=recipient.id,
         officeid=recipient.officeid,
         officename=recipient.officename,
