@@ -31,7 +31,7 @@ class RecipientModel(BaseModel):
     officeid: int
     officename: str
     officeabbr: str
-    datereceived: Optional[datetime] = None
+    datereceived: datetime
     timereceived: str
     userid: int
     name: str
