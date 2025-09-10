@@ -5,8 +5,9 @@ from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
 from config.db.pmis_db import engine
 from routes import doc_route, reference, verify_user, refresh, calendar
-from routes.DTS import document, recipient
+from routes.DTS import document, recipient, upload
 from routes.route import router
+from config.minio_config import minio_client, S3_DTS_BUCKET
 
 app = FastAPI()
 
@@ -29,7 +30,13 @@ app.add_middleware(
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
+        await ensure_bucket()
     yield
+
+async def ensure_bucket():
+    found = minio_client.bucket_exists(S3_DTS_BUCKET)
+    if not found:
+        minio_client.make_bucket(S3_DTS_BUCKET)
 
 #
 # @app.on_event("startup")
@@ -46,7 +53,9 @@ app.include_router(calendar.router, prefix="/test", tags=["test"])
 
 ## region DTS
 app.include_router(document.router, prefix="/document", tags=["document"])
-app.include_router(recipient.router, prefix="/document/recipient", tags=["recipient"])
+app.include_router(recipient.router, prefix="/document/recipient", tags=["document"])
+
+app.include_router(upload.router, prefix="/document/upload", tags=["document"])
 
 ## endregion
 

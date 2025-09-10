@@ -11,6 +11,13 @@ class Settings(BaseSettings):
     SQL_USER: SecretStr
     PMIS_DB_ADDRESS: SecretStr
     OTHERS_DB_ADDRESS: SecretStr
+    S3_ENDPOINT: SecretStr
+    S3_ACCESS_KEY: SecretStr
+    S3_SECRET_KEY: SecretStr
+    S3_REGION: SecretStr
+    S3_DTS_BUCKET: SecretStr
+    S3_SECURE: SecretStr
+    THRESHOLD_BYTES: int
     # db1_password: SecretStr
     #
     # # DB 2 (optional)
