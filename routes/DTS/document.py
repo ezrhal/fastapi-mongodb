@@ -12,6 +12,7 @@ router = APIRouter()
 @router.post("/savedocument")
 async def save_document(post_request: PostDocumentModel):
     doc = jsonable_encoder(post_request)
+    print(doc)
     document = db["Documents"].insert_one(doc)
 
 @router.post("/updatedocument")
