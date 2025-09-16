@@ -1,24 +1,14 @@
 import io
-import mimetypes
 import os
 from datetime import datetime, timedelta
 from typing import Optional
 from urllib.parse import quote
-
 from fastapi import APIRouter, UploadFile, File, Query, HTTPException, Header, Response
 from minio import S3Error
 from starlette.responses import StreamingResponse
-from tenacity import retry, stop_after_attempt, wait_exponential
-
 from Helpers.MInIO.helper import build_object_name
-from config.db.mongodb import db
 from config.minio_config import minio_client, S3_DTS_BUCKET
-from config.config import settings
 from functions.compression import safe_filename, should_compress, zstd_compress_bytes, zstd_decompress_stream
-from models.DTS.Document import AttachmentModel, PostAttachmentModel, PostDocumentModel, PostRecipientModel, \
-    RecipientModel, PostRemoveOfficeModel
-from fastapi.encoders import jsonable_encoder
-
 from models.MinIO.minio_model import PresignUploadOut, PresignUploadIn, PresignDownloadOut, PresignDownloadIn
 from config.config import settings
 

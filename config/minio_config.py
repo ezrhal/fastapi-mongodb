@@ -21,7 +21,7 @@ S3_ACCESS_KEY = settings.S3_ACCESS_KEY.get_secret_value()
 S3_SECRET_KEY = settings.S3_SECRET_KEY.get_secret_value()
 S3_REGION     = os.getenv("S3_REGION", "us-east-1")
 S3_DTS_BUCKET = settings.S3_DTS_BUCKET.get_secret_value()
-S3_SECURE     = False # settings.S3_SECURE.get_secret_value()
+S3_SECURE     = settings.S3_SECURE.get_secret_value()
 
 minio_client = Minio(
     endpoint=S3_ENDPOINT.replace("http://", "").replace("https://", ""),
