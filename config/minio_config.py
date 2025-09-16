@@ -24,10 +24,11 @@ S3_DTS_BUCKET = settings.S3_DTS_BUCKET.get_secret_value()
 S3_SECURE     = settings.S3_SECURE.get_secret_value()
 
 minio_client = Minio(
-    endpoint=S3_ENDPOINT.replace("http://", "").replace("https://", ""),
+    #endpoint=S3_ENDPOINT.replace("http://", "").replace("https://", ""),
+    endpoint="workflow.pgas.ph:9000",
     access_key=S3_ACCESS_KEY,
     secret_key=S3_SECRET_KEY,
-    secure=S3_SECURE,
+    secure=False,
     region=S3_REGION,
 
 )
