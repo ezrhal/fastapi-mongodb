@@ -43,9 +43,7 @@ def presign_download(body: PresignDownloadIn):
 #@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=0.3, max=3))
 @router.post("/files/upload")
 async def upload_file(
-    doctype: str,
-    docyear: str,
-    docid: str,
+    bucket: str,
     file: UploadFile = File(...),
     prefix: str = Query("uploads", description="Path prefix, e.g. Memo/2025"),
 ):
@@ -54,36 +52,36 @@ async def upload_file(
     original_size = len(raw)
 
     key_base = f"{safe_filename(file.filename)}"
-    prefix = f"{doctype}/{docyear}/{key_base}"
+    filename = f"{prefix}/{file.filename}"
 
     # Decide whether to compress
-    if original_size > settings.THRESHOLD_BYTES * 1024 * 1024:
+    if original_size > 500 * 1024 * 1024:
         compressed = zstd_compress_bytes(raw, level=9, threads=-1)  # good default
-        object_name = prefix + ".zst"
+        object_name = filename + ".zst"
         stored_ct = "application/zstd"  # commonly used; clients will download
         metadata = {
             "x-amz-meta-compressed": "zstd",
             "x-amz-meta-original-content-type": original_ct,
-            "x-amz-meta-original-size": str(original_size),
-            "x-amz-meta-docid" : docid,
+            "x-amz-meta-original-size": str(original_size)
+            #"x-amz-meta-docid" : docid,
         }
         data = io.BytesIO(compressed)
         length = len(compressed)
     else:
-        object_name = prefix
+        object_name = filename
         stored_ct = original_ct
         metadata = {
             "x-amz-meta-compressed": "none",
             "x-amz-meta-original-content-type": original_ct,
-            "x-amz-meta-original-size": str(original_size),
-            "x-amz-meta-docid": docid,
+            "x-amz-meta-original-size": str(original_size)
+            #"x-amz-meta-docid": docid,
         }
         data = io.BytesIO(raw)
         length = original_size
 
     try:
         result = minio_client.put_object(
-            bucket_name=S3_DTS_BUCKET,
+            bucket_name=bucket,
             object_name=object_name,
             data=data,
             length=length,
