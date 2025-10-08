@@ -1,11 +1,13 @@
 from contextlib import asynccontextmanager
+from unicodedata import lookup
 
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
 from config.db.pmis_db import engine
 from routes import doc_route, reference, verify_user, refresh, calendar
-from routes.DTS import document, recipient, upload
+from routes.DTS import document, recipient, upload, lookup
+from routes.Reference import pmis_office
 from routes.route import router
 from config.minio_config import minio_client, S3_DTS_BUCKET
 
@@ -54,9 +56,13 @@ app.include_router(calendar.router, prefix="/test", tags=["test"])
 ## region DTS
 app.include_router(document.router, prefix="/document", tags=["document"])
 app.include_router(recipient.router, prefix="/document/recipient", tags=["document"])
-
 app.include_router(upload.router, prefix="/document/upload", tags=["document"])
 
+## endregion
+
+## region REFERENCE
+app.include_router(lookup.router, prefix="/reference", tags=["reference"])
+app.include_router(pmis_office.router, prefix="/reference", tags=["offices"])
 ## endregion
 
 app.include_router(router)
