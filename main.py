@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from unicodedata import lookup
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
 
@@ -26,7 +26,7 @@ BOT_TOKEN = "7554480933:AAESR3boR9NapytAl_dNkiMrYIXrh2doUm4"
 
 telegram_app = Application.builder().token(BOT_TOKEN).build()
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def start(update: Update, context):
     keyboard = [
         [KeyboardButton("🗓 Schedule")],
         [KeyboardButton("🎛 Buttons Editor"), KeyboardButton("📝 Posts Editor")],
@@ -36,6 +36,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Choose an option:", reply_markup=reply_markup)
 
 telegram_app.add_handler(CommandHandler("start", start))
+
+@app.post("/webhook")
+async def webhook(request: Request):
+    data = await request.json()
+    update = Update.de_json(data, telegram_app.bot)
+    await telegram_app.process_update(update)
+    return {"ok": True}
 
 origins = [
     "http://localhost:5173",  # Example: Allow a frontend running on localhost:3000
@@ -57,7 +64,8 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
         await ensure_bucket()
-        asyncio.create_task(telegram_app.run_polling())
+        webhook_url = "https://workflow.pgas.ph:8080/webhook"
+        await telegram_app.bot.set_webhook(webhook_url)
     yield
 
 async def ensure_bucket():
