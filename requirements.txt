@@ -63,3 +63,4 @@ websockets==15.0.1
 minio>=7.2.9
 tenacity>=8.2.3
 zstandard>=0.24.0
+python-telegram-bot>=22.5

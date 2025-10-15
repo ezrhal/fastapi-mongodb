@@ -4,11 +4,14 @@ from unicodedata import lookup
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
+
+from Telegram.bot import telegram_app
 from config.db.pmis_db import engine
 from routes import doc_route, reference, verify_user, refresh, calendar
 from routes.DTS import document, recipient, upload, lookup
 from routes.Reference import pmis_office
 from routes.route import router
+from Telegram import bot
 from config.minio_config import minio_client, S3_DTS_BUCKET
 
 app = FastAPI()
@@ -33,6 +36,8 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
         await ensure_bucket()
+        webhook_url = "https://workflow.pgas.ph:8080/webhook"
+        await telegram_app.bot.set_webhook(webhook_url)
     yield
 
 async def ensure_bucket():
@@ -63,6 +68,7 @@ app.include_router(upload.router, prefix="/document/upload", tags=["document"])
 ## region REFERENCE
 app.include_router(lookup.router, prefix="/reference", tags=["reference"])
 app.include_router(pmis_office.router, prefix="/reference", tags=["offices"])
+app.include_router(bot.router)
 ## endregion
 
 app.include_router(router)
