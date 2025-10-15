@@ -14,7 +14,28 @@ from routes.route import router
 from Telegram import bot
 from config.minio_config import minio_client, S3_DTS_BUCKET
 
+from fastapi import FastAPI
+from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
+from telegram.ext import Application, CommandHandler, ContextTypes
+import asyncio
+
+
 app = FastAPI()
+
+BOT_TOKEN = "7554480933:AAESR3boR9NapytAl_dNkiMrYIXrh2doUm4"
+
+telegram_app = Application.builder().token(BOT_TOKEN).build()
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [
+        [KeyboardButton("🗓 Schedule")],
+        [KeyboardButton("🎛 Buttons Editor"), KeyboardButton("📝 Posts Editor")],
+        [KeyboardButton("💵 Balance"), KeyboardButton("🔐 Admin")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    await update.message.reply_text("Choose an option:", reply_markup=reply_markup)
+
+telegram_app.add_handler(CommandHandler("start", start))
 
 origins = [
     "http://localhost:5173",  # Example: Allow a frontend running on localhost:3000
@@ -36,8 +57,7 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
         await ensure_bucket()
-        webhook_url = "https://workflow.pgas.ph:8080/webhook"
-        await telegram_app.bot.set_webhook(webhook_url)
+        asyncio.create_task(telegram_app.run_polling())
     yield
 
 async def ensure_bucket():
@@ -68,7 +88,7 @@ app.include_router(upload.router, prefix="/document/upload", tags=["document"])
 ## region REFERENCE
 app.include_router(lookup.router, prefix="/reference", tags=["reference"])
 app.include_router(pmis_office.router, prefix="/reference", tags=["offices"])
-app.include_router(bot.router)
+
 ## endregion
 
 app.include_router(router)
