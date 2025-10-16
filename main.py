@@ -4,8 +4,8 @@ from unicodedata import lookup
 from fastapi import FastAPI, Request
 from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
+from telegram import Update
 
-from Telegram.bot import telegram_app
 from config.db.pmis_db import engine
 from routes import doc_route, reference, verify_user, refresh, calendar
 from routes.DTS import document, recipient, upload, lookup
@@ -15,9 +15,13 @@ from Telegram import bot
 from config.minio_config import minio_client, S3_DTS_BUCKET
 
 from fastapi import FastAPI
+
+from fastapi import FastAPI, Request, BackgroundTasks
+from fastapi import FastAPI
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes
 import asyncio
+from Telegram.bot import start_handler, medaltally_handler
 
 
 app = FastAPI()
@@ -25,17 +29,7 @@ app = FastAPI()
 BOT_TOKEN = "7554480933:AAESR3boR9NapytAl_dNkiMrYIXrh2doUm4"
 
 telegram_app = Application.builder().token(BOT_TOKEN).build()
-
-async def start(update: Update, context):
-    keyboard = [
-        [KeyboardButton("🗓 Schedule")],
-        [KeyboardButton("🎛 Buttons Editor"), KeyboardButton("📝 Posts Editor")],
-        [KeyboardButton("💵 Balance"), KeyboardButton("🔐 Admin")]
-    ]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-    await update.message.reply_text("Choose an option:", reply_markup=reply_markup)
-
-telegram_app.add_handler(CommandHandler("start", start))
+telegram_app.add_handler(start_handler)
 
 @app.post("/webhook")
 async def webhook(request: Request):
@@ -43,6 +37,7 @@ async def webhook(request: Request):
     update = Update.de_json(data, telegram_app.bot)
     await telegram_app.process_update(update)
     return {"ok": True}
+
 
 origins = [
     "http://localhost:5173",  # Example: Allow a frontend running on localhost:3000
@@ -72,6 +67,8 @@ async def ensure_bucket():
     found = minio_client.bucket_exists(S3_DTS_BUCKET)
     if not found:
         minio_client.make_bucket(S3_DTS_BUCKET)
+
+
 
 #
 # @app.on_event("startup")

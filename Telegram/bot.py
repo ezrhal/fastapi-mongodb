@@ -1,33 +1,24 @@
-from fastapi import FastAPI, Request
-from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
-from telegram.ext import Application, CommandHandler
-from fastapi import APIRouter
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-import asyncio
-import os
+TOKEN = "YOUR_BOT_TOKEN"
 
-BOT_TOKEN = "7554480933:AAESR3boR9NapytAl_dNkiMrYIXrh2doUm4"
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Hello! I'm your bot 😊")
 
-router = APIRouter()
+async def medaltally(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🏅 Here’s the medal tally!")
 
-telegram_app = Application.builder().token(BOT_TOKEN).build()
-
-async def start(update: Update, context):
+async def schedule(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [KeyboardButton("🗓 Schedule")],
-        [KeyboardButton("🎛 Buttons Editor"), KeyboardButton("📝 Posts Editor")],
-        [KeyboardButton("💵 Balance"), KeyboardButton("🔐 Admin")]
+        [{"text": "🏀 Basketball", "callback_data": "basketball"}],
+        [{"text": "⚾ Baseball", "callback_data": "baseball"}],
     ]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-    await update.message.reply_text("Choose an option:", reply_markup=reply_markup)
+    await update.message.reply_text(
+        "Choose a sport:",
+        reply_markup={"inline_keyboard": keyboard}
+    )
 
-# Add /start command handler
-telegram_app.add_handler(CommandHandler("start", start))
 
-@router.post("/webhook")
-async def telegram_webhook(request: Request):
-    """Receive updates from Telegram"""
-    data = await request.json()
-    update = Update.de_json(data, telegram_app.bot)
-    await telegram_app.process_update(update)
-    return {"ok": True}
+start_handler = CommandHandler("start", start)
+medaltally_handler = CommandHandler("medaltally", medaltally)
