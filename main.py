@@ -60,7 +60,8 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(SQLModel.metadata.create_all)
         await ensure_bucket()
         webhook_url = "https://workflow.pgas.ph:8080/webhook"
-        await telegram_app.bot.set_webhook(webhook_url)
+        rs = await telegram_app.bot.set_webhook(webhook_url)
+        print(rs)
     yield
 
 async def ensure_bucket():
