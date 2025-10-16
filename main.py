@@ -23,10 +23,24 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 import asyncio
 from Telegram.bot import start_handler, medaltally_handler
 
-
-app = FastAPI()
-
+# async def ensure_bucket():
+#     found = minio_client.bucket_exists(S3_DTS_BUCKET)
+#     if not found:
+#         minio_client.make_bucket(S3_DTS_BUCKET)
 BOT_TOKEN = "7554480933:AAESR3boR9NapytAl_dNkiMrYIXrh2doUm4"
+webhook_url = "https://workflow.pgas.ph:88/webhook"
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await telegram_app.initialize()
+    await telegram_app.start()
+    await telegram_app.bot.set_webhook(url=webhook_url)
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
+        # await ensure_bucket()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 telegram_app = Application.builder().token(BOT_TOKEN).build()
 telegram_app.add_handler(start_handler)
@@ -54,20 +68,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
-        await ensure_bucket()
-        webhook_url = "https://workflow.pgas.ph:8080/webhook"
-        rs = await telegram_app.bot.set_webhook(webhook_url)
-        print(rs)
-    yield
 
-async def ensure_bucket():
-    found = minio_client.bucket_exists(S3_DTS_BUCKET)
-    if not found:
-        minio_client.make_bucket(S3_DTS_BUCKET)
 
 
 
